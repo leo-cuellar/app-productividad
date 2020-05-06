@@ -1,0 +1,18 @@
+@import 'nav.css';
+@import 'pendingTasks.css';
+@import 'taskInput.css';
+@import 'task.css';
+@import 'editTask.css';
+@import 'timer.css';
+
+body {
+    margin: 0;
+    background-color: rgb(245, 245, 245);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}

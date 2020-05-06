@@ -1,17 +1,237 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import nextId from 'react-id-generator'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import Nav from './components/Nav'
+import PendingTasks from './components/PendingTasks';
+import CompletedTasks from './components/CompletedTasks';
+import EditTask from './components/EditTask';
+import Timer from './components/Timer';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+import * as ROUTES from './constants/routes'
+
+import './style/index.css'
+
+const App = () => {
+
+  const [tasks, setTasks] = useState([])
+  const [newTask, setNewTask] = useState('')
+  const [newDescription, setNewDescription] = useState('')
+  const [newHour, setNewHour] = useState('')
+  const [newMinute, setNewMinute] = useState('')
+  const [details, setDetails] = useState({
+    display: false,
+    id: '',
+    title: '',
+    description: '',
+    duration: {
+      hours: 0,
+      minutes: 0,
+    },
+    completed: false
+  })
+  const [timer, setTimer] = useState({
+    display: false,
+    title: '',
+    hours: 0,
+    minutes: 0
+  })
+
+  const handleNewTask = event => {
+    setNewTask(event.target.value)
+  }
+
+  const handleNewDescription = event => {
+    setNewDescription(event.target.value)
+  }
+
+  const handleNewHour = event => {
+    setNewHour(Number(event.target.value))
+  }
+
+  const handleNewMinute = event => {
+    setNewMinute(Number(event.target.value))
+  }
+
+  const addTask = event => {
+
+    event.preventDefault()
+
+    const taskObject = {
+      id: nextId(),
+      title: newTask,
+      description: '',
+      duration: {
+        hours: 0,
+        minutes: 30,
+      },
+      completed: false
+    }
+
+    setTasks(tasks.concat(taskObject))
+    setNewTask('')
+
+  }
+
+  const markComplete = (id) => {
+
+    if (details.display) {
+      toggleDetails(id)
+    }
+
+    const newTasks = tasks.map(task => {
+      if (task.id === id) {
+        task.completed = !task.completed
+      }
+      return task
+    })
+
+    setTasks(newTasks)
+
+  }
+
+  const toggleDetails = (id) => {
+
+    const currentTask = tasks.filter(task => task.id === id)
+
+    if (!details.display) {
+      setDetails({
+        display: !details.display,
+        ...currentTask
+      })
+      setNewTask(currentTask[0].title)
+      setNewDescription(currentTask[0].description)
+      setNewHour(currentTask[0].duration.hours)
+      setNewMinute(currentTask[0].duration.minutes)
+    } else {
+      setDetails({
+        display: !details.display,
+        id: '',
+        title: '',
+        description: '',
+        duration: {
+          hours: 0,
+          minutes: 0,
+        },
+      })
+      setNewTask('')
+      setNewDescription('')
+      setNewHour('')
+      setNewMinute('')
+    }
+
+  }
+
+  const save = (id) => {
+
+    const newTasks = tasks.map(task => {
+      if (task.id === id) {
+        task.title = newTask
+        task.description = newDescription
+        task.duration.hours = newHour
+        task.duration.minutes = newMinute
+      }
+      return task
+    })
+
+    setTasks(newTasks)
+    toggleDetails(id)
+  }
+
+  const toggleTimer = (id) => {
+
+    const currentTask = tasks.filter(task => task.id === id)
+    const title = currentTask[0].title
+    const hours = currentTask[0].duration.hours
+    const minutes = currentTask[0].duration.minutes
+
+    console.log(currentTask)
+
+    if (!timer.display) {
+      toggleDetails(id)
+      setTimer({
+        display: !timer.display,
+        id: id,
+        title: title,
+        hours: hours,
+        minutes: minutes
+      })
+    } else {
+      setTimer({
+        display: !timer.display,
+        id: '',
+        title: '',
+        hours: 0,
+        minutes: 0,
+      })
+    }
+
+  }
+
+
+  return (
+    <>
+      <Router>
+        <Nav />
+        <Redirect to={ROUTES.TASKS} />
+        <Route
+          path={ROUTES.TASKS}
+          render={() => {
+            if (timer.display) {
+              return (
+                <Timer
+                  timer={timer}
+                  toggleTimer={toggleTimer}
+                  markComplete={markComplete}
+                />
+              )
+            } else if (details.display) {
+              return (
+                <EditTask
+                  newTask={newTask}
+                  newDescription={newDescription}
+                  newHour={newHour}
+                  newMinute={newMinute}
+                  handleNewTask={handleNewTask}
+                  handleNewDescription={handleNewDescription}
+                  handleNewHour={handleNewHour}
+                  handleNewMinute={handleNewMinute}
+                  details={details}
+                  markComplete={markComplete}
+                  toggleDetails={toggleDetails}
+                  save={save}
+                  toggleTimer={toggleTimer}
+                />
+              )
+            } else {
+              return (
+                <PendingTasks
+                  newTask={newTask}
+                  handleNewTask={handleNewTask}
+                  addTask={addTask}
+                  tasks={tasks.filter(task => !task.completed)}
+                  markComplete={markComplete}
+                  toggleDetails={toggleDetails}
+                />
+              )
+            }
+          }}
+        />
+        <Route
+          path={ROUTES.COMPLETED}
+          render={() =>
+            <CompletedTasks
+              tasks={tasks.filter(task => task.completed)}
+              markComplete={markComplete}
+            />
+          }
+        />
+      </Router>
+    </>
+  )
+
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
+

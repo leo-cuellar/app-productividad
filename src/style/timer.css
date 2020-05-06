@@ -1,0 +1,75 @@
+.timerContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.timerDisplay {
+    display: flex;
+    flex-direction: row;
+    margin: 70px 0 70px 0;
+}
+
+.timerDisplay > p {
+    font-size: 70px;
+    margin: 0;
+}
+
+.timerInnerDisplay {
+    display: flex;
+    flex-direction: column;
+}
+
+.timerTitle {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 50px 0 0 0;
+}
+
+.timerButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.timerButtons > Button {
+    border: none;
+    margin: 0 20px 0 20px;
+    width: 70%;
+    height: 40px;
+    border-radius: 7px;
+    cursor: pointer;
+    background-color: #6994f9;
+    color:white;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.timeControll {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0 70px 0;
+    justify-content: center;
+}
+
+.timeControll > div {
+    margin: 0 10px 0 10px;
+}
+
+.timeControllLabel {
+    font-weight: bold;
+}
+
+.timeControllComponent {
+    font-size: 70px;
+}
+
+#pause {
+    background-color: #cfcfcf;
+}
+
+#finish {
+    background-color: red;
+}
