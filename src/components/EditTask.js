@@ -15,7 +15,8 @@ const EditTask = ({
     newMinute,
     handleNewMinute,
     save,
-    toggleTimer
+    toggleTimer,
+    remove
 }) => {
 
     return (
@@ -24,7 +25,7 @@ const EditTask = ({
                 <div className='inputHeader'>
                     <input className='editInput title' value={newTask} onChange={handleNewTask} />
                     <div className='inputButtons'>
-                        <button onClick={() => toggleDetails(details[0].id)}><FontAwesomeIcon icon={faTimes} /></button>
+                        <button onClick={() => remove(details[0].id)}><FontAwesomeIcon icon={faTimes} /></button>
                         <button id='saveButton' onClick={() => save(details[0].id)}><FontAwesomeIcon icon={faSave} /></button>
                     </div>
                 </div>

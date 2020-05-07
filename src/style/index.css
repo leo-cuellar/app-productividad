@@ -4,6 +4,7 @@
 @import 'task.css';
 @import 'editTask.css';
 @import 'timer.css';
+@import 'graph.css';
 
 body {
     margin: 0;

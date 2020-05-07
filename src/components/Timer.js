@@ -1,9 +1,6 @@
 import React from 'react'
 import TimeControll from 'react-compound-timer'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faSave } from '@fortawesome/free-solid-svg-icons'
-
 const Timer = ({
     timer,
     toggleTimer,
