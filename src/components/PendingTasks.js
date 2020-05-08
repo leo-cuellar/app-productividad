@@ -65,7 +65,7 @@ const PendingTasks = ({
                             filter === '2'
                             ?
                             tasks.filter(task => {
-                                if (task.duration.minutes >= 30 && task.duration.hours === 0 || task.duration.hours === 1 && task.duration.minutes === 0) {
+                                if ((task.duration.minutes >= 30 && task.duration.hours === 0) || (task.duration.hours === 1 && task.duration.minutes === 0)) {
                                     return task
                                 }
                             }).map(task => (

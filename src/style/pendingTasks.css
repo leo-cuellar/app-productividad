@@ -31,3 +31,9 @@
     border-radius: 5px;
 }
 
+@media only screen and (max-width: 700px) {
+    .contentContainer{
+        width: 100%;
+    }
+}
+

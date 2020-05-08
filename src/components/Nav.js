@@ -8,19 +8,19 @@ const Nav = () => {
     return (
         <div className='nav'>
             <div className='navElement'>
-                <li>
-                    <Link to={ROUTES.TASKS}>Tareas pendientes</Link>
-                </li>
+                
+                    <Link to={ROUTES.TASKS}>Pendientes</Link>
+               
             </div>
             <div className='navElement'>
-                <li>
-                    <Link to={ROUTES.COMPLETED}>Tareas completadas</Link>
-                </li>
+            
+                    <Link to={ROUTES.COMPLETED}>Completadas</Link>
+             
             </div>
             <div className='navElement'>
-                <li>
+            
                     <Link to={ROUTES.GRAPH}>Grafica</Link>
-                </li>
+        
             </div>
         </div>
     )
