@@ -5,7 +5,6 @@ import { faTimes, faSave } from '@fortawesome/free-solid-svg-icons'
 const EditTask = ({
     details,
     markComplete,
-    toggleDetails,
     newTask,
     handleNewTask,
     newDescription,

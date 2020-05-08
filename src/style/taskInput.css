@@ -61,7 +61,12 @@
 
 @media only screen and (max-width: 700px) {
     .filterMenu {
-        right: 90px;
-        top: 85vh
+        right: 0px;
+        top: 82vh
+    }
+
+    .filterMenu > button {
+        width: 100vw;
+        border-radius: 0;
     }
 }

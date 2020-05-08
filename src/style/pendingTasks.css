@@ -34,6 +34,12 @@
 @media only screen and (max-width: 700px) {
     .contentContainer{
         width: 100%;
+        margin: 0 auto;
+        border-radius: 0;
+    }
+
+    .tasks{
+        margin: 0;
     }
 }
 

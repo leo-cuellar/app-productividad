@@ -13,6 +13,9 @@ import EditTask from './components/EditTask';
 import Timer from './components/Timer';
 import Graph from './components/Graph'
 
+//servicio backend
+import taskService from './services/tasks'
+
 //rutas
 import * as ROUTES from './constants/routes'
 
@@ -43,11 +46,11 @@ const App = () => {
     id: '',
     title: '',
     description: '',
+    completed: false,
     duration: {
       hours: 0,
       minutes: 0,
-    },
-    completed: false
+    }
   })
 
   //controlador de pantalla de timer
@@ -76,6 +79,13 @@ const App = () => {
   //se ha estado graficando. Si no es asi, resetea la grafica.
   useEffect(() => {
 
+    //obtiene las tareas de api
+    taskService
+      .getAll()
+      .then(initialTasks => {
+        setTasks(initialTasks)
+      })
+
     let d = new Date()
     let firstDayOfWeek = getMonday()
 
@@ -98,7 +108,7 @@ const App = () => {
       { firstDayOfWeek: firstDayOfWeek },
       graphData[1]
     ])
-    
+
   }, [])
 
   //determina el primer dia de la semana
@@ -135,15 +145,19 @@ const App = () => {
       id: nextId(),
       title: newTask,
       description: '',
+      completed: false,
       duration: {
         hours: 0,
         minutes: 30,
-      },
-      completed: false
+      }
     }
 
-    setTasks(tasks.concat(taskObject))
-    setNewTask('')
+    taskService
+      .create(taskObject)
+      .then(returnedTask => {
+        setTasks(tasks.concat(returnedTask))
+        setNewTask('')
+      })
 
   }
 
@@ -155,23 +169,30 @@ const App = () => {
       toggleDetails(id)
     }
 
-    const newTasks = tasks.map(task => {
-      if (task.id === id) {
-        task.completed = !task.completed
-      }
-      return task
-    })
+    const task = tasks.find(t => t.id === id)
+    const changedTask = {
+      ...task,
+      completed: !task.completed
+    }
+
+    taskService
+      .update(id, changedTask)
+      .then(returnedTask => {
+        setTasks(tasks.map(task => task.id !== id ? task : returnedTask))
+      })
+      .catch(error => {
+        alert('already deleted from db')
+        setTasks(tasks.filter(t => t.id !== id))
+      })
 
     updateGraphData()
-
-    setTasks(newTasks)
 
   }
 
   //abre o cierra la pantalla de detalles de tarea
   const toggleDetails = (id) => {
 
-    const currentTask = tasks.filter(task => task.id === id)
+    const currentTask = tasks.filter(t => t.id === id)
 
     //si estaba cerrada, la abre y llena los campos con los datos de la tarea seleccionada
     if (!details.display) {
@@ -205,24 +226,33 @@ const App = () => {
   //guarda los detalles modificados de la tarea
   const save = (id) => {
 
-    const newTasks = tasks.map(task => {
-      if (task.id === id) {
-        task.title = newTask
-        task.description = newDescription
-        task.duration.hours = newHour
-        task.duration.minutes = newMinute
+    const task = tasks.find(t => t.id === id)
+    const changedTask = {
+      ...task,
+      title: newTask,
+      description: newDescription,
+      duration: {
+        hours: newHour,
+        minutes: newMinute
       }
-      return task
-    })
+    }
 
-    setTasks(newTasks)
-    
+    taskService
+      .update(id, changedTask)
+      .then(returnedTask => {
+        setTasks(tasks.map(task => task.id !== id ? task : returnedTask))
+      })
+      .catch(error => {
+        alert('already deleted from db')
+        setTasks(tasks.filter(t => t.id !== id))
+      })
+
     //al guardar cierra la pantalla de detalles
     toggleDetails(id)
   }
 
   //elimina la tarea
-  const remove = (id) => {
+  const removed = (id) => {
 
     const newTasks = tasks.map(task => {
       if (task.id !== id) {
@@ -230,7 +260,11 @@ const App = () => {
       }
     })
 
-    setTasks(newTasks)
+    taskService
+    .remove(id)
+    .then(() => {
+      setTasks(newTasks)
+    })
 
   }
 
@@ -352,7 +386,7 @@ const App = () => {
                   markComplete={markComplete}
                   toggleDetails={toggleDetails}
                   save={save}
-                  remove={remove}
+                  remove={removed}
                   toggleTimer={toggleTimer}
                 />
               )
