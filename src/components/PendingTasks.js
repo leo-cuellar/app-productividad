@@ -1,12 +1,7 @@
 import React from 'react'
 import TaskInput from './TaskInput'
 import Task from './Task'
-import Reorder, {
-    reorder,
-    reorderImmutable,
-    reorderFromTo,
-    reorderFromToImmutable
-} from 'react-reorder';
+import Reorder from 'react-reorder';
 
 const PendingTasks = ({
     newTask,
@@ -15,7 +10,9 @@ const PendingTasks = ({
     tasks,
     markComplete,
     toggleDetails,
-    reorderList
+    reorderList,
+    filter,
+    newFilter
 }) => {
 
     const onReorder = (event, previousIndex, nextIndex, fromId, toId) => {
@@ -29,32 +26,92 @@ const PendingTasks = ({
                 newTask={newTask}
                 handleNewTask={handleNewTask}
                 addTask={addTask}
+                newFilter={newFilter}
             />
 
             <div className='tasks' id='scroll'>
                 <Reorder
-                    reorderId="taskList" // Unique ID that is used internally to track this list (required)
+                    reorderId="taskList"
                     onReorder={onReorder}
-                    component="ul" // Tag name or Component to be used for the wrapping element (optional), defaults to 'div'
-                    lock="horizontal" // Lock the dragging direction (optional): vertical, horizontal (do not use with groups)
-                    holdTime={500} // Default hold time before dragging begins (mouse & touch) (optional), defaults to 0
-                    touchHoldTime={500} // Hold time before dragging begins on touch devices (optional), defaults to holdTime
-                    mouseHoldTime={200} // Hold time before dragging begins with mouse (optional), defaults to holdTime
-                    disableContextMenus={true} // Disable context menus when holding on touch devices (optional), defaults to true
+                    component="ul"
+                    lock="horizontal"
+                    holdTime={500}
+                    touchHoldTime={500}
+                    mouseHoldTime={200}
+                    disableContextMenus={true}
                     placeholder={
-                        <div className="custom-placeholder" /> // Custom placeholder element (optional), defaults to clone of dragged element
+                        <div className="custom-placeholder" />
                     }
                 >
-                    {tasks.map(task =>
-                        (<li key={task.id}><Task
-                            id={task.id}
-                            title={task.title}
-                            markComplete={markComplete}
-                            completed={false}
-                            toggleDetails={toggleDetails}
-                        /></li>
-                        ))}
+                    {
+                        filter === '1'
+                            ?
+                            tasks.filter(task => {
+                                if (task.duration.hours === 0 && task.duration.minutes <= 30) {
+                                    return task
+                                }
+                            }).map(task => (
+                                <li key={task.id}><Task
+                                    id={task.id}
+                                    title={task.title}
+                                    markComplete={markComplete}
+                                    completed={false}
+                                    toggleDetails={toggleDetails}
+                                    hours={task.duration.hours}
+                                    minutes={task.duration.minutes}
+                                /></li>
+                            ))
+                            :
+                            filter === '2'
+                            ?
+                            tasks.filter(task => {
+                                if (task.duration.minutes >= 30 && task.duration.hours === 0 || task.duration.hours === 1 && task.duration.minutes === 0) {
+                                    return task
+                                }
+                            }).map(task => (
+                                <li key={task.id}><Task
+                                    id={task.id}
+                                    title={task.title}
+                                    markComplete={markComplete}
+                                    completed={false}
+                                    toggleDetails={toggleDetails}
+                                    hours={task.duration.hours}
+                                    minutes={task.duration.minutes}
+                                /></li>
+                            ))
+                            :
+                            filter === '3'
+                            ?
+                            tasks.filter(task => {
+                                if (task.duration.minutes >= 0 && task.duration.hours >= 1) {
+                                    return task
+                                }
+                            }).map(task => (
+                                <li key={task.id}><Task
+                                    id={task.id}
+                                    title={task.title}
+                                    markComplete={markComplete}
+                                    completed={false}
+                                    toggleDetails={toggleDetails}
+                                    hours={task.duration.hours}
+                                    minutes={task.duration.minutes}
+                                /></li>
+                            ))
+                            :
+                            tasks.map(task =>
+                                (<li key={task.id}><Task
+                                    id={task.id}
+                                    title={task.title}
+                                    markComplete={markComplete}
+                                    completed={false}
+                                    toggleDetails={toggleDetails}
+                                    hours={task.duration.hours}
+                                    minutes={task.duration.minutes}
+                                /></li>
+                            ))
+                    }
                 </Reorder>
+
             </div>
 
         </div>

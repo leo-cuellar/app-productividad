@@ -1,9 +1,11 @@
+//dependencias
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import nextId from 'react-id-generator'
-import { reorder, reorderImmutable, reorderFromTo, reorderFromToImmutable } from 'react-reorder';
+import { reorder } from 'react-reorder';
 
+//componentes
 import Nav from './components/Nav'
 import PendingTasks from './components/PendingTasks';
 import CompletedTasks from './components/CompletedTasks';
@@ -11,17 +13,31 @@ import EditTask from './components/EditTask';
 import Timer from './components/Timer';
 import Graph from './components/Graph'
 
+//rutas
 import * as ROUTES from './constants/routes'
 
+//estilos
 import './style/index.css'
 
 const App = () => {
 
+  //tareas
   const [tasks, setTasks] = useState([])
+
+  //estado de inputs
+  //titulo de tarea
   const [newTask, setNewTask] = useState('')
+  //descripcion
   const [newDescription, setNewDescription] = useState('')
+  //horas
   const [newHour, setNewHour] = useState('')
+  //minutos
   const [newMinute, setNewMinute] = useState('')
+
+  //estado del filtro
+  const [filter, setFilter] = useState('all')
+
+  //controlador de pantalla de detalles de tarea
   const [details, setDetails] = useState({
     display: false,
     id: '',
@@ -33,12 +49,16 @@ const App = () => {
     },
     completed: false
   })
+
+  //controlador de pantalla de timer
   const [timer, setTimer] = useState({
     display: false,
     title: '',
     hours: 0,
     minutes: 0
   })
+
+  //controlador de grafica
   const [graphData, setGraphData] = useState([
     { firstDayOfWeek: 0 },
     [
@@ -52,6 +72,8 @@ const App = () => {
     ]
   ])
 
+  //cuando el componente es montado verifica si el dia actual corresponde a la semana que 
+  //se ha estado graficando. Si no es asi, resetea la grafica.
   useEffect(() => {
 
     let d = new Date()
@@ -79,6 +101,7 @@ const App = () => {
     
   }, [])
 
+  //determina el primer dia de la semana
   const getMonday = () => {
     let d = new Date()
     let day = d.getDay(),
@@ -86,6 +109,7 @@ const App = () => {
     return diff;
   }
 
+  //controladores de inputs de detalles de tarea
   const handleNewTask = event => {
     setNewTask(event.target.value)
   }
@@ -102,6 +126,7 @@ const App = () => {
     setNewMinute(Number(event.target.value))
   }
 
+  //agregar nueva tarea a la lista
   const addTask = event => {
 
     event.preventDefault()
@@ -122,8 +147,10 @@ const App = () => {
 
   }
 
+  //marcar una tarea pendiente como completada
   const markComplete = (id) => {
 
+    //si la pantalla de detalles se encuentra abierta, la cierra
     if (details.display) {
       toggleDetails(id)
     }
@@ -141,10 +168,12 @@ const App = () => {
 
   }
 
+  //abre o cierra la pantalla de detalles de tarea
   const toggleDetails = (id) => {
 
     const currentTask = tasks.filter(task => task.id === id)
 
+    //si estaba cerrada, la abre y llena los campos con los datos de la tarea seleccionada
     if (!details.display) {
       setDetails({
         display: !details.display,
@@ -173,6 +202,7 @@ const App = () => {
 
   }
 
+  //guarda los detalles modificados de la tarea
   const save = (id) => {
 
     const newTasks = tasks.map(task => {
@@ -186,9 +216,12 @@ const App = () => {
     })
 
     setTasks(newTasks)
+    
+    //al guardar cierra la pantalla de detalles
     toggleDetails(id)
   }
 
+  //elimina la tarea
   const remove = (id) => {
 
     const newTasks = tasks.map(task => {
@@ -201,12 +234,14 @@ const App = () => {
 
   }
 
+  //modificacion del orden de las tareas
   const reorderList = (previousIndex, nextIndex) => {
 
     setTasks(reorder(tasks, previousIndex, nextIndex))
 
   }
 
+  //cierra o abre la pantalla de timer
   const toggleTimer = (id) => {
 
     const currentTask = tasks.filter(task => task.id === id)
@@ -237,6 +272,7 @@ const App = () => {
 
   }
 
+  //actualizacion de datos de grafica, aumenta una tarea en el dia actual cada vez que es ejecutada
   const updateGraphData = () => {
 
     let d = new Date()
@@ -280,6 +316,10 @@ const App = () => {
 
   }
 
+  //modificacion del estado del filtro de tareas
+  const newFilter = (value) => {
+    setFilter(value)
+  }
 
   return (
     <>
@@ -326,6 +366,8 @@ const App = () => {
                   markComplete={markComplete}
                   toggleDetails={toggleDetails}
                   reorderList={reorderList}
+                  filter={filter}
+                  newFilter={newFilter}
                 />
               )
             }

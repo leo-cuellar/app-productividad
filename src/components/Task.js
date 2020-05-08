@@ -3,7 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 
-const Task = ({ title, markComplete, id, completed, disabled, toggleDetails }) => {
+const Task = ({
+    title,
+    markComplete,
+    id,
+    completed,
+    disabled,
+    toggleDetails,
+    hours,
+    minutes
+}) => {
 
     return (
         <div className='task'>
@@ -15,11 +24,17 @@ const Task = ({ title, markComplete, id, completed, disabled, toggleDetails }) =
                 }
                 <p>{title}</p>
             </div>
-            {disabled ?
-                <button className='taskButtonDetailsDisabled' disabled><FontAwesomeIcon icon={faAngleRight} /></button>
-                :
-                <button className='taskButtonDetails' onClick={() => toggleDetails(id)}><FontAwesomeIcon icon={faAngleRight} /></button>
-            }
+            <div className='taskRight'>
+                {disabled ?
+                    <button className='taskButtonDetailsDisabled' disabled><FontAwesomeIcon icon={faAngleRight} /></button>
+                    :
+                    <>
+                    <p>{hours}H {minutes}M</p>
+                    <button className='taskButtonDetails' onClick={() => toggleDetails(id)}><FontAwesomeIcon icon={faAngleRight} /></button>
+                    </>
+                }
+            </div>
+
         </div>
     )
 

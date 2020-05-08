@@ -1,3 +1,7 @@
+.taskInputContainer {
+    position: relative;
+}
+
 .taskInputContainer>form {
     display: flex;
     flex-direction: row;
@@ -36,4 +40,21 @@
     -webkit-box-shadow: 0px 10px 68px -30px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px 10px 68px -30px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 10px 68px -30px rgba(0, 0, 0, 0.75);
+}
+
+.filterMenu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: -180px;
+}
+
+.filterMenu > Button {
+    margin: 0 0 15px 0;
+    border: none;
+    border-radius: 50px;
+    background-color: white;
+    width: 150px;
+    height: 35px;
+    cursor: pointer;
 }
